@@ -1,0 +1,11 @@
+Packages
+.build
+Sources/main.swift
+Public
+Resources
+.DS_Store
+Carthage/
+Xcode/Genetics.xcodeproj/project.xcworkspace/xcuserdata/
+Xcode/Genetics.xcodeproj/project.xcworkspace/xcshareddata/
+Xcode/Genetics.xcodeproj/xcuserdata/
+*.swp
