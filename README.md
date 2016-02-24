@@ -4,7 +4,7 @@ A lightweight and generic Genetic Algorithm, for Swift
 
 ## Getting Started
 
-To get started, you must have Swift 2.2 or later.
+To get started, you must have Swift 2.2 or later. Go to [swift.org](https://swift.org/download/) to download the latest Development snapshot
 
 ## Hello World
 
