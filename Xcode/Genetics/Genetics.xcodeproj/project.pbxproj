@@ -16,6 +16,7 @@
 		4F19FD291C7DD38700A3F009 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F841C7CADD50073EDA2 /* Selection.swift */; };
 		4F19FD2A1C7DD38700A3F009 /* TournamentSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F851C7CADD50073EDA2 /* TournamentSelection.swift */; };
 		4F19FD2B1C7DD38700A3F009 /* Gene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCC6A9D1C7D27B500C2F7C0 /* Gene.swift */; };
+		4F19FD2D1C7E1BA100A3F009 /* StringChromosome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F19FD2C1C7E1BA100A3F009 /* StringChromosome.swift */; };
 		4F8A7F5F1C7CAD8E0073EDA2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F5E1C7CAD8E0073EDA2 /* main.swift */; };
 		4F8A7F6D1C7CADAB0073EDA2 /* Genetics.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A7F6C1C7CADAB0073EDA2 /* Genetics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4F8A7F741C7CADAB0073EDA2 /* Genetics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F8A7F6A1C7CADAB0073EDA2 /* Genetics.framework */; };
@@ -52,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4F19FD2C1C7E1BA100A3F009 /* StringChromosome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringChromosome.swift; sourceTree = "<group>"; };
 		4F8A7F5B1C7CAD8E0073EDA2 /* Genetics-Example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Genetics-Example"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F8A7F5E1C7CAD8E0073EDA2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4F8A7F6A1C7CADAB0073EDA2 /* Genetics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Genetics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				4F8A7F5E1C7CAD8E0073EDA2 /* main.swift */,
+				4F19FD2C1C7E1BA100A3F009 /* StringChromosome.swift */,
 			);
 			name = "Genetics-Example";
 			path = Genetics;
@@ -291,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F19FD2D1C7E1BA100A3F009 /* StringChromosome.swift in Sources */,
 				4F19FD291C7DD38700A3F009 /* Selection.swift in Sources */,
 				4F19FD281C7DD38700A3F009 /* Population.swift in Sources */,
 				4F19FD261C7DD38700A3F009 /* Crossover.swift in Sources */,

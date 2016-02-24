@@ -57,6 +57,10 @@ public class GeneticAlgorithm<T: Chromosome> {
         currentTopChromosome = topChromo
     }
     
+    public func stop() {
+        isRunning = false
+    }
+    
     public func runSync(desiredFitness: Int? = nil) {
         isRunning = true
 
@@ -67,7 +71,7 @@ public class GeneticAlgorithm<T: Chromosome> {
         } else {
             repeat {
                 runNextGeneration()
-            } while true
+            } while isRunning
         }
     }
     

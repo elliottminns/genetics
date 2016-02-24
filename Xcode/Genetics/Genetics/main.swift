@@ -1,64 +1,32 @@
 import Foundation
+import Genetics
 
-extension Int: Gene {
+class Algorithm {
     
-}
-
-final class IntChromosome: Chromosome {
+    var algorithm: GeneticAlgorithm<StringChromosome>?
     
-    var genes: [Int]
-    
-    static var allowsDuplicates: Bool {
-        return true
-    }
-    
-    required init(genes: [Int]) {
-        self.genes = genes
-    }
-    
-    func fitness() -> Int {
-        return genes.reduce(0) {
-            return $0 + $1
-        }
-    }
-    
-    func randomMutationOnGene(gene: Int) -> Int {
-        let chance = arc4random_uniform(UInt32(2))
+    func createPopulation() -> Population<StringChromosome> {
         
-        if chance == 0 {
-            return gene.predecessor()
-        } else {
-            return gene.successor()
-        }
-    }
-    
-}
-
-class Runner {
-    
-    var algorithm: GeneticAlgorithm<IntChromosome>?
-    
-    init() {
-    }
-    
-    func createPopulation() -> Population<IntChromosome> {
-        var chromosomes = [IntChromosome]()
+        var chromosomes = [StringChromosome]()
+        
         for _ in 0 ..< 100 {
             chromosomes.append(createChromosome())
         }
         
-        return Population<IntChromosome>(chromosomes: chromosomes)
+        return Population<StringChromosome>(chromosomes: chromosomes)
     }
     
-    func createChromosome() -> IntChromosome {
+    func createChromosome() -> StringChromosome {
         
-        var genes = [Int]()
+        let desired = "helloworld"
         
-        for _ in 0 ..< 10 {
-            genes.append(0)
+        var genes = [String]()
+        
+        for _ in 0 ..< desired.characters.count {
+            genes.append("a")
         }
         
-        let chromosome = IntChromosome(genes: genes)
+        let chromosome = StringChromosome(genes: genes)
         return chromosome
     }
     
@@ -70,16 +38,25 @@ class Runner {
     }
 }
 
-extension Runner: GeneticAlgorithmDelegate {
+extension Algorithm: GeneticAlgorithmDelegate {
     func geneticAlgorithm<T: Chromosome>(algorithm: GeneticAlgorithm<T>,
                           didCompleteGeneration generation: Int,
                                                 withPopulation population: Population<T>) {
         
-        print("\(generation) fitness: \(population.totalFitness())")
+        let top = algorithm.currentTopChromosome
+        let genes = top.genes.map {
+            return $0 as! String
+        }
         
-        print("\(algorithm.currentTopChromosome.fitness())")
+        let world = genes.joinWithSeparator("")
+        print("\(generation): \(genes.joinWithSeparator(""))")
+        
+        if world == "helloworld" {
+            algorithm.stop()
+        }
+        
     }
 }
 
-let runner = Runner() 
-runner.start()
+let algorithm = Algorithm()
+algorithm.start()
