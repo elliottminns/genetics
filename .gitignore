@@ -5,7 +5,7 @@ Public
 Resources
 .DS_Store
 Carthage/
-Xcode/Genetics.xcodeproj/project.xcworkspace/xcuserdata/
-Xcode/Genetics.xcodeproj/project.xcworkspace/xcshareddata/
-Xcode/Genetics.xcodeproj/xcuserdata/
+Xcode/Genetics/Genetics.xcodeproj/project.xcworkspace/xcuserdata/
+Xcode/Genetics/Genetics.xcodeproj/project.xcworkspace/xcshareddata/
+Xcode/Genetics/Genetics.xcodeproj/xcuserdata/
 *.swp
