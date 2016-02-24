@@ -16,7 +16,11 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     var currentTopPopulation: Population<T>?
 
-    var currentTopChromosome: T
+    var currentTopChromosome: T {
+        return topChromosome
+    }
+    
+    var topChromosome: T
     
     var topFitness: Int {
         return currentTopFitness
@@ -115,7 +119,7 @@ public class GeneticAlgorithm<T: Chromosome> {
 
         for chromo in currentPopulation.chromosomes {
             if chromo.fitness() > currentTopChromosome.fitness() {
-                self.currentTopChromosome = chromo
+                self.topChromosome = chromo
             }
         }
         
