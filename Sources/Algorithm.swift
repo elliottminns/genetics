@@ -2,9 +2,9 @@
 import Foundation
 
 public protocol GeneticAlgorithmDelegate {
-    func geneticAlgorithm<T>(algorithm: GeneticAlgorithm<T>,
-                          didCompleteGeneration generationCount: Int,
-                                                withPopulation population: Population<T>)
+    func geneticAlgorithm<T: Chromosome>(algorithm: GeneticAlgorithm<T>,
+        didCompleteGeneration generationCount: Int,
+        withPopulation population: Population<T>)
 }
 
 
@@ -15,6 +15,8 @@ public class GeneticAlgorithm<T: Chromosome> {
     }
     
     var currentTopPopulation: Population<T>?
+
+    var currentTopChromosome: T
     
     var topFitness: Int {
         return currentTopFitness
@@ -30,7 +32,7 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     var crossover: Crossover
     
-    var mutationRate: Double = 0.005
+    var mutationRate: Double = 1.0
     
     public var selection: Selection
     
@@ -45,6 +47,14 @@ public class GeneticAlgorithm<T: Chromosome> {
         crossover = PartiallyMatchedCrossover<T>(crossoverRate: 80)
         currentPopulation = initialPopulation
         self.delegate = delegate
+    
+        var topChromo = initialPopulation.chromosomes.first!
+        for chromo in initialPopulation.chromosomes {
+            if chromo.fitness() > topChromo.fitness() {
+                topChromo = chromo
+            }   
+        }
+        currentTopChromosome = topChromo
     }
     
     public func runSync(desiredFitness: Int? = nil) {
@@ -69,23 +79,40 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     public func runNextGeneration() {
         let matingPool = selection.selectFromPopulation(currentPopulation)
-        let children = crossover.crossoverPopulation(matingPool)
+        var children = crossover.crossoverPopulation(matingPool)
         
-        for child in children {
-            for gene in child.genes {
+        for childIndex in 0 ..< children.count {
+            
+            for i in 0 ..< children[childIndex].genes.count {
+                
                 let chance = Double(arc4random_uniform(UInt32(10e5))) / 1e4
+                
                 if chance <= mutationRate {
-                    child.randomMutationOnGene(gene)
+                    let child = children[childIndex]
+                    let gene = child.genes[i]
+                    
+                    children[childIndex].genes[i] = child.randomMutationOnGene(gene)
+                    
                 }
             }
+
         }
         
         let population = Population<T>(chromosomes: children)
+
         currentPopulation = population
+
         let fitness = currentPopulation.totalFitness()
+
         if fitness > currentTopFitness {
             currentTopPopulation = currentPopulation
             currentTopFitness = fitness
+        }
+
+        for chromo in currentPopulation.chromosomes {
+            if chromo.fitness() > currentTopChromosome.fitness() {
+                self.currentTopChromosome = chromo
+            }
         }
         
         delegate.geneticAlgorithm(self, didCompleteGeneration: currentGeneration, withPopulation: population)

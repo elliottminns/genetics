@@ -7,30 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F19FD231C7DC02F00A3F009 /* Genetics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F8A7F6A1C7CADAB0073EDA2 /* Genetics.framework */; };
+		4F19FD241C7DD38700A3F009 /* Algorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9E7DEB1C7CE45900516E72 /* Algorithm.swift */; };
+		4F19FD251C7DD38700A3F009 /* Chromosome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F821C7CADD50073EDA2 /* Chromosome.swift */; };
+		4F19FD261C7DD38700A3F009 /* Crossover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9EB9E81C7D0D67002B4013 /* Crossover.swift */; };
+		4F19FD271C7DD38700A3F009 /* PartiallyMatchedCrossover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9EB9EA1C7D0E1B002B4013 /* PartiallyMatchedCrossover.swift */; };
+		4F19FD281C7DD38700A3F009 /* Population.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F831C7CADD50073EDA2 /* Population.swift */; };
+		4F19FD291C7DD38700A3F009 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F841C7CADD50073EDA2 /* Selection.swift */; };
+		4F19FD2A1C7DD38700A3F009 /* TournamentSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F851C7CADD50073EDA2 /* TournamentSelection.swift */; };
+		4F19FD2B1C7DD38700A3F009 /* Gene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCC6A9D1C7D27B500C2F7C0 /* Gene.swift */; };
 		4F8A7F5F1C7CAD8E0073EDA2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F5E1C7CAD8E0073EDA2 /* main.swift */; };
 		4F8A7F6D1C7CADAB0073EDA2 /* Genetics.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A7F6C1C7CADAB0073EDA2 /* Genetics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4F8A7F741C7CADAB0073EDA2 /* Genetics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F8A7F6A1C7CADAB0073EDA2 /* Genetics.framework */; };
 		4F8A7F791C7CADAB0073EDA2 /* GeneticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F781C7CADAB0073EDA2 /* GeneticsTests.swift */; };
-		4F8A7F861C7CADD50073EDA2 /* Chromosome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F821C7CADD50073EDA2 /* Chromosome.swift */; };
-		4F8A7F871C7CADD50073EDA2 /* Population.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F831C7CADD50073EDA2 /* Population.swift */; };
-		4F8A7F881C7CADD50073EDA2 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F841C7CADD50073EDA2 /* Selection.swift */; };
-		4F8A7F891C7CADD50073EDA2 /* TournamentSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A7F851C7CADD50073EDA2 /* TournamentSelection.swift */; };
-		4F8A7F8A1C7CADE60073EDA2 /* Genetics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F8A7F6A1C7CADAB0073EDA2 /* Genetics.framework */; };
-		4F9EB9E41C7CE4E2002B4013 /* Algorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9E7DEB1C7CE45900516E72 /* Algorithm.swift */; };
-		4F9EB9E91C7D0D67002B4013 /* Crossover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9EB9E81C7D0D67002B4013 /* Crossover.swift */; };
-		4F9EB9EB1C7D0E1B002B4013 /* PartiallyMatchedCrossover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9EB9EA1C7D0E1B002B4013 /* PartiallyMatchedCrossover.swift */; };
-		4FCC6A9F1C7D27E300C2F7C0 /* Gene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCC6A9D1C7D27B500C2F7C0 /* Gene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4F8A7F751C7CADAB0073EDA2 /* PBXContainerItemProxy */ = {
+		4F19FD211C7DC02B00A3F009 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4F8A7F531C7CAD8E0073EDA2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4F8A7F691C7CADAB0073EDA2;
 			remoteInfo = Genetics;
 		};
-		4F8A7F8B1C7CADEB0073EDA2 /* PBXContainerItemProxy */ = {
+		4F8A7F751C7CADAB0073EDA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4F8A7F531C7CAD8E0073EDA2 /* Project object */;
 			proxyType = 1;
@@ -75,7 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F8A7F8A1C7CADE60073EDA2 /* Genetics.framework in Frameworks */,
+				4F19FD231C7DC02F00A3F009 /* Genetics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,7 +186,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				4F8A7F8C1C7CADEB0073EDA2 /* PBXTargetDependency */,
+				4F19FD221C7DC02B00A3F009 /* PBXTargetDependency */,
 			);
 			name = "Genetics-Example";
 			productName = Genetics;
@@ -291,7 +291,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F19FD291C7DD38700A3F009 /* Selection.swift in Sources */,
+				4F19FD281C7DD38700A3F009 /* Population.swift in Sources */,
+				4F19FD261C7DD38700A3F009 /* Crossover.swift in Sources */,
+				4F19FD271C7DD38700A3F009 /* PartiallyMatchedCrossover.swift in Sources */,
 				4F8A7F5F1C7CAD8E0073EDA2 /* main.swift in Sources */,
+				4F19FD251C7DD38700A3F009 /* Chromosome.swift in Sources */,
+				4F19FD241C7DD38700A3F009 /* Algorithm.swift in Sources */,
+				4F19FD2B1C7DD38700A3F009 /* Gene.swift in Sources */,
+				4F19FD2A1C7DD38700A3F009 /* TournamentSelection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,14 +307,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F9EB9EB1C7D0E1B002B4013 /* PartiallyMatchedCrossover.swift in Sources */,
-				4F8A7F881C7CADD50073EDA2 /* Selection.swift in Sources */,
-				4F8A7F871C7CADD50073EDA2 /* Population.swift in Sources */,
-				4F9EB9E91C7D0D67002B4013 /* Crossover.swift in Sources */,
-				4FCC6A9F1C7D27E300C2F7C0 /* Gene.swift in Sources */,
-				4F8A7F861C7CADD50073EDA2 /* Chromosome.swift in Sources */,
-				4F8A7F891C7CADD50073EDA2 /* TournamentSelection.swift in Sources */,
-				4F9EB9E41C7CE4E2002B4013 /* Algorithm.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,15 +321,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4F19FD221C7DC02B00A3F009 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4F8A7F691C7CADAB0073EDA2 /* Genetics */;
+			targetProxy = 4F19FD211C7DC02B00A3F009 /* PBXContainerItemProxy */;
+		};
 		4F8A7F761C7CADAB0073EDA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4F8A7F691C7CADAB0073EDA2 /* Genetics */;
 			targetProxy = 4F8A7F751C7CADAB0073EDA2 /* PBXContainerItemProxy */;
-		};
-		4F8A7F8C1C7CADEB0073EDA2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4F8A7F691C7CADAB0073EDA2 /* Genetics */;
-			targetProxy = 4F8A7F8B1C7CADEB0073EDA2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

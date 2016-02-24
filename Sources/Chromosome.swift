@@ -2,7 +2,7 @@ public protocol Chromosome {
     
     associatedtype GeneType: Gene
     
-    var genes: [GeneType] { get }
+    var genes: [GeneType] { get set }
     
     static var allowsDuplicates: Bool { get }
     

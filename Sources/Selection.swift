@@ -1,3 +1,5 @@
+import Foundation
+
 public protocol Selection {
     func selectFromPopulation<T: Chromosome>(population: Population<T>) -> [T]
 }
