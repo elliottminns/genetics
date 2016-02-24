@@ -4,7 +4,7 @@ A lightweight and generic Genetic Algorithm, for Swift
 
 ## Getting Started
 
-To get started, you must have Swift 2.2 or later.
+To get started, you must have Swift 2.2 or later. Go to [swift.org](https://swift.org/download/) to download the latest Development snapshot
 
 ## Hello World
 
@@ -208,7 +208,11 @@ final class StringChromosome: Chromosome {
 }
 ```
 
-Then run and see the results. 
+Then run and see the results. (Your mileage **will** vary)
+
+```
+$ swift build && .build/debug/HelloGAWorld
+```
 
 ```
 0: aaaaaaoaaa
