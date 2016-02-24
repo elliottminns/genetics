@@ -208,7 +208,11 @@ final class StringChromosome: Chromosome {
 }
 ```
 
-Then run and see the results. 
+Then run and see the results. (Your mileage **will** vary)
+
+```
+$ swift build && .build/debug/HelloGAWorld
+```
 
 ```
 0: aaaaaaoaaa
