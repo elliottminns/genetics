@@ -16,7 +16,7 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     var currentTopPopulation: Population<T>?
 
-    var currentTopChromosome: T {
+    public var currentTopChromosome: T {
         return topChromosome
     }
     
@@ -58,7 +58,7 @@ public class GeneticAlgorithm<T: Chromosome> {
                 topChromo = chromo
             }   
         }
-        currentTopChromosome = topChromo
+        topChromosome = topChromo
     }
     
     public func stop() {
