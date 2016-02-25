@@ -21,13 +21,13 @@ public class GeneticAlgorithm<T: Hashable> {
         return currentTopFitness
     }
     
-    var fitnessFunction: ((chromosome: [T]) -> Int)?
+    public var fitnessFunction: ((chromosome: [T]) -> Int)?
     
-    var randomMutation: ((gene: T) -> T)?
+    public var randomMutation: ((gene: T) -> T)?
     
-    var randomChromosome: (() -> [T])?
+    public var randomChromosome: (() -> [T])?
     
-    var onGenerationCompleted: ((generation: Int) -> ())?
+    public var onGenerationCompleted: ((generation: Int) -> ())?
     
     var currentGeneration: Int = 0
     
@@ -35,11 +35,11 @@ public class GeneticAlgorithm<T: Hashable> {
     
     var currentPopulation: Population<T>!
     
-    var crossover: Crossover
-    
-    var mutationRate: Double = 0.02
+    public var crossover: Crossover
     
     public var selection: Selection
+    
+    public var mutationRate: Double = 0.02
     
     public var running: Bool {
         return isRunning
