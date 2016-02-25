@@ -45,7 +45,7 @@ public class GeneticAlgorithm<T: Hashable> {
     
     public var selection: Selection
     
-    public var mutationRate: Double = 0.02
+    public var mutationRate: Double = 0.05
     
     public var running: Bool {
         return isRunning
@@ -93,8 +93,9 @@ public class GeneticAlgorithm<T: Hashable> {
         
         let population = Population<T>(chromosomes: initialPopulation)
         currentPopulation = population
-        
-        topChromosome = findTopChromosomeInPopulation(population)
+        let result = findTopChromosomeInPopulation(population)
+        topChromosome = result.chromosome
+        currentTopFitness = result.fitness
     }
     
     public func stop() {
@@ -129,7 +130,7 @@ public class GeneticAlgorithm<T: Hashable> {
             return $0.genes
         }
         
-        var children = crossover.crossoverPopulation(mating)
+        var children = crossover.crossoverPopulation(mating, allowDuplicates: self.allowsDuplicates)
         
         for childIndex in 0 ..< children.count {
             
@@ -155,7 +156,7 @@ public class GeneticAlgorithm<T: Hashable> {
                         #else
                             newValue = Int(arc4random_uniform(UInt32(child.count)))
                         #endif
-                        } while newValue != i
+                        } while newValue == i
                         
                         let a = child[i]
                         let b = child[newValue]
@@ -166,6 +167,7 @@ public class GeneticAlgorithm<T: Hashable> {
                 }
             }
         }
+    
         
         let newPopulation = children.map {
             return Chromosome<T>(genes: $0, allowsDuplicates: self.allowsDuplicates, fitnessFunction: self.fitnessFunction!)
@@ -177,13 +179,18 @@ public class GeneticAlgorithm<T: Hashable> {
 
         currentGeneration += 1
         
-        topChromosome = findTopChromosomeInPopulation(population)
+        let result = findTopChromosomeInPopulation(population)
+        
+        if result.fitness > currentTopFitness {
+            topChromosome = result.chromosome
+            currentTopFitness = result.fitness
+        }
         
         onGenerationCompleted!(generation: currentGeneration)
         
     }
     
-    func findTopChromosomeInPopulation(population: Population<T>) -> Chromosome<T> {
+    func findTopChromosomeInPopulation(population: Population<T>) -> (chromosome: Chromosome<T>, fitness: Int) {
         
         var topFitness: Int? = nil
         
@@ -210,7 +217,7 @@ public class GeneticAlgorithm<T: Hashable> {
                 topChromosome = chromo
             }
         }
-        return topChromosome
+        return (chromosome: topChromosome, fitness: topFitness!)
     }
     
     

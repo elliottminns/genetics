@@ -1,5 +1,3 @@
-import Foundation
-
 import Genetics
 
 #if os(Linux)
@@ -8,85 +6,118 @@ import Genetics
     import Darwin
 #endif
 
-final class Algorithm {
+struct City {
+    let x: Int
+    let y: Int
+    let identifier: String
     
-    let possibleGenes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-                         "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
-                         "w", "x", "y", "z"]
+    func distanceFromOtherCity(city: City) -> Int {
+        let x = abs(self.x - city.x)
+        let y = abs(self.y - city.y)
+        return y * y + x * x
+    }
+}
+
+extension City: Hashable {
+    var hashValue: Int {
+        return identifier.hashValue
+    }
+}
+
+func ==(lhs: City, rhs: City) -> Bool {
+    return lhs.identifier == rhs.identifier
+}
+
+class Algorithm {
     
-    let algorithm = GeneticAlgorithm<String>(populationSize: 50, allowsDuplicates: false)
+    //    1  2  3  4  5  6  7  8  9  10
+    // 1  A                    G      O
+    // 2           B
+    // 3              N
+    // 4                  J    F      M
+    // 5     I
+    // 6               E
+    // 7        P
+    // 8  C            K              H
+    // 9
+    // 10         L               D
+    
+    let cities = [City(x: 1, y: 1, identifier: "A"),
+                  City(x: 4, y: 2, identifier: "B"),
+                  City(x: 1, y: 8, identifier: "C"),
+                  City(x: 9, y: 10, identifier: "D"),
+                  City(x: 5, y: 6, identifier: "E"),
+                  City(x: 8, y: 4, identifier: "F"),
+                  City(x: 8, y: 1, identifier: "G"),
+                  City(x: 10, y: 8, identifier: "H"),
+                  City(x: 2, y: 5, identifier: "I"),
+                  City(x: 6, y: 4, identifier: "J"),
+                  City(x: 5, y: 8, identifier: "K"),
+                  City(x: 3, y: 10, identifier: "L"),
+                  City(x: 10, y: 4, identifier: "M"),
+                  City(x: 5, y: 3, identifier: "N"),
+                  City(x: 10, y: 1, identifier: "O"),
+                  City(x: 3, y: 7, identifier: "P"),
+        ]
+    
+    let num = [1,2,3,4,5,6,7]
+    
+
+    let algorithm: GeneticAlgorithm<City>
     
     init() {
+        algorithm = GeneticAlgorithm<City>(populationSize: 10,
+                                           allowsDuplicates: false)
         
-        algorithm.fitnessFunction = { (chromosome: [String]) -> Int in
+        algorithm.fitnessFunction = { (chromosome: [City]) -> Int in
+            var distance = 0
             
-            let desired = "helloworld"
             
-            let string = chromosome.joinWithSeparator("")
             
-            let chars = string.characters
             
-            var fitness = 0
-            
-            var characterSet = Set<Character>()
-            
-            for char in chars {
-                characterSet.insert(char)
-            }
-            
-            for char in desired.characters {
-                if characterSet.contains(char) {
-                    fitness += 1
+            // Smaller is better
+            var previousCity: City?
+            for city in chromosome {
+                if let previousCity = previousCity {
+                    distance -= previousCity.distanceFromOtherCity(city)
                 }
+                
+                previousCity = city
             }
             
-            var desiredArray = desired.characters.map {
-                return String($0)
-            }
+            let first = chromosome[0]
             
-            for i in 0 ..< desiredArray.count {
-                
-                let desiredChar = desiredArray[i]
-                
-                let actualChar = chromosome[i]
-                
-                if desiredChar == actualChar {
-                    fitness += 100
-                }
-            }
+            distance -= previousCity!.distanceFromOtherCity(first)
             
-            return fitness
+            return distance
         }
         
-        algorithm.randomMutation = { (gene: String) -> String in
-            #if os(Linux)
-                let newValueIndex = Int(UInt32(rand()) % UInt32(possibleGenes.count))
-            #else
-                let newValueIndex = Int(arc4random_uniform(UInt32(self.possibleGenes.count)))
-            #endif
+        algorithm.randomChromosome = { () -> [City] in
             
-            return self.possibleGenes[newValueIndex]
-        }
-        
-        algorithm.randomChromosome = { () -> [String] in
-        
-            let length = "helloworld".characters.count
             
-            var chromosome: [String] = []
-            
-            for _ in 0 ..< length {
-                chromosome.append("a")
+            let chromosome: [City] = self.cities.sort { _, _ -> Bool in
+                #if os(Linux)
+                    let index = Int(UInt32(rand()) % UInt32(2))
+                #else
+                    let index = Int(arc4random_uniform(UInt32(2)))
+                #endif
+                
+                return index > 0
+                
             }
             
             return chromosome
         }
         
         algorithm.onGenerationCompleted = { generation in
-            let details = self.algorithm.currentTopChromosome.joinWithSeparator("")
-            print("\(generation): \(details)")
-            if details == "helloworld" {
-                self.algorithm.stop()
+            let identifiers = self.algorithm.currentTopChromosome.map {
+                return $0.identifier
             }
+            
+            let fitness = self.algorithm.currentTopFitness
+            
+            let details = identifiers.joinWithSeparator("")
+            print("\(generation): \(details) - \(fitness)")
         }
     }
     

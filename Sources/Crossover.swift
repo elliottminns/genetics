@@ -12,7 +12,7 @@ public protocol Crossover {
 
 extension Crossover {
     
-    func crossoverPopulation<T: Hashable>(parents: [[Gene<T>]]) -> [[Gene<T>]] {
+    func crossoverPopulation<T: Hashable>(parents: [[Gene<T>]], allowDuplicates: Bool) -> [[Gene<T>]] {
         
         var firstParents = parents
         
@@ -32,9 +32,15 @@ extension Crossover {
             }
             
             let childs = performCrossover(parentA, chromosomeB: parentB)
+            var childA = childs.childA
+            var childB = childs.childB
             
-            children.append(childs.childA)
-            children.append(childs.childB)
+            if (!allowDuplicates) {
+                swapDuplicates(&childA, &childB)
+            }
+            
+            children.append(childA)
+            children.append(childB)
         }
         
         return children
