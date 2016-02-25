@@ -69,6 +69,8 @@ class Algorithm {
         algorithm = GeneticAlgorithm<City>(populationSize: 10,
                                            allowsDuplicates: false)
         
+        algorithm.mutationRate = 0.04
+        
         algorithm.fitnessFunction = { (chromosome: [City]) -> Int in
             var distance = 0
             

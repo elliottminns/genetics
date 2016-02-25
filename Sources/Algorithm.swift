@@ -21,7 +21,7 @@ public class GeneticAlgorithm<T: Hashable> {
         }
     }
     
-    var topChromosome: Chromosome<T>!
+    public var topChromosome: Chromosome<T>!
     
     public var topFitness: Int {
         return currentTopFitness
