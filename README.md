@@ -40,17 +40,15 @@ let package = Package(name: "HelloGAWorld",
 
 ```
 
-Then create a `Sources` directory and add the following files to it:
+Then create a `Sources` directory and add the following file to it:
 
 ```
 $ mkdir Sources
 
 $ touch main.swift
-
-$ touch StringChromosome.swift
 ```
 
-Then, add the following code to each file
+Then, add the following code
 
 ```
 main.swift
@@ -58,76 +56,7 @@ main.swift
 
 ```swift
 import Foundation
-import Genetics
 
-class Algorithm {
-    
-    var algorithm: GeneticAlgorithm<StringChromosome>?
-    
-    func createPopulation() -> Population<StringChromosome> {
-        
-        var chromosomes = [StringChromosome]()
-        
-        for _ in 0 ..< 100 {
-            chromosomes.append(createChromosome())
-        }
-        
-        return Population<StringChromosome>(chromosomes: chromosomes)
-    }
-    
-    func createChromosome() -> StringChromosome {
-        
-        let desired = "helloworld"
-        
-        var genes = [String]()
-        
-        for _ in 0 ..< desired.characters.count {
-            genes.append("a")
-        }
-        
-        let chromosome = StringChromosome(genes: genes)
-        return chromosome
-    }
-    
-    func start() {
-        let initialPopulation = createPopulation()
-        let algorithm = GeneticAlgorithm(initialPopulation: initialPopulation,
-                                         delegate: self)
-        algorithm.runSync()
-    }
-}
-
-extension Algorithm: GeneticAlgorithmDelegate {
-    func geneticAlgorithm<T: Chromosome>(algorithm: GeneticAlgorithm<T>,
-                          didCompleteGeneration generation: Int,
-                                                withPopulation population: Population<T>) {
-        
-        let top = algorithm.currentTopChromosome
-        let genes = top.genes.map {
-            return $0 as! String
-        }
-        
-        let world = genes.joinWithSeparator("")
-        print("\(generation): \(genes.joinWithSeparator(""))")
-        
-        if world == "helloworld" {
-            algorithm.stop()
-        }
-        
-    }
-}
-
-let algorithm = Algorithm()
-
-algorithm.start()
-
-```
-
-```
-StringChromosome.swift
-```
-
-```swift
 import Genetics
 
 #if os(Linux)
@@ -136,76 +65,95 @@ import Genetics
     import Darwin
 #endif
 
-extension String: Gene {}
-
-final class StringChromosome: Chromosome {
-    
-    var genes: [String]
-    
-    static var allowsDuplicates: Bool {
-        return false
-    }
-    
-    required init(genes: [String]) {
-        self.genes = genes
-    }
+final class Algorithm {
     
     let possibleGenes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
                          "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
                          "w", "x", "y", "z"]
     
-    func fitness() -> Int {
+    let algorithm = GeneticAlgorithm<String>(populationSize: 50, allowsDuplicates: false)
+    
+    init() {
         
-        let desired = "helloworld"
-        
-        let string = genes.joinWithSeparator("")
-        
-        let chars = string.characters
-        
-        var fitness = 0
-        
-        var characterSet = Set<Character>()
-        
-        for char in chars {
-            characterSet.insert(char)
+        algorithm.fitnessFunction = { (chromosome: [String]) -> Int in
+            
+            let desired = "helloworld"
+            
+            let string = chromosome.joinWithSeparator("")
+            
+            let chars = string.characters
+            
+            var fitness = 0
+            
+            var characterSet = Set<Character>()
+            
+            for char in chars {
+                characterSet.insert(char)
+            }
+            
+            for char in desired.characters {
+                if characterSet.contains(char) {
+                    fitness += 1
+                }
+            }
+            
+            var desiredArray = desired.characters.map {
+                return String($0)
+            }
+            
+            for i in 0 ..< desiredArray.count {
+                
+                let desiredChar = desiredArray[i]
+                
+                let actualChar = chromosome[i]
+                
+                if desiredChar == actualChar {
+                    fitness += 100
+                }
+            }
+            
+            return fitness
         }
         
-        for char in desired.characters {
-            if characterSet.contains(char) {
-                fitness += 1
+        algorithm.randomMutation = { (gene: String) -> String in
+            #if os(Linux)
+                let newValueIndex = Int(UInt32(rand()) % UInt32(possibleGenes.count))
+            #else
+                let newValueIndex = Int(arc4random_uniform(UInt32(self.possibleGenes.count)))
+            #endif
+            
+            return self.possibleGenes[newValueIndex]
+        }
+        
+        algorithm.randomChromosome = { () -> [String] in
+        
+            let length = "helloworld".characters.count
+            
+            var chromosome: [String] = []
+            
+            for _ in 0 ..< length {
+                chromosome.append("a")
+            }
+            
+            return chromosome
+        }
+        
+        algorithm.onGenerationCompleted = { generation in
+            let details = self.algorithm.currentTopChromosome.joinWithSeparator("")
+            print("\(generation): \(details)")
+            if details == "helloworld" {
+                self.algorithm.stop()
             }
         }
-        
-        var desiredArray = desired.characters.map {
-            return String($0)
-        }
-        
-        for i in 0 ..< desiredArray.count {
-            
-            let desiredChar = desiredArray[i]
-            
-            let actualChar = genes[i]
-            
-            if desiredChar == actualChar {
-                fitness += 100
-            }
-        }
-        
-        return fitness
     }
     
-    func randomMutationOnGene(gene: String) -> String {
-        
-        #if os(Linux)
-            let newValueIndex = Int(UInt32(rand()) % UInt32(possibleGenes.count))
-        #else
-            let newValueIndex = Int(arc4random_uniform(UInt32(possibleGenes.count)))
-        #endif
-        
-        return possibleGenes[newValueIndex]
+    func run() {
+        algorithm.runSync()
     }
-    
 }
+
+let algorithm = Algorithm()
+algorithm.run()
 ```
 
 Then run and see the results. (Your mileage **will** vary)
