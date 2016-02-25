@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct PartiallyMatchedCrossover<T: Chromosome> {
+struct PartiallyMatchedCrossover {
 
     var crossoverRate: Double
     
@@ -12,33 +12,26 @@ struct PartiallyMatchedCrossover<T: Chromosome> {
 
 extension PartiallyMatchedCrossover: Crossover {
     
-    func performCrossover<T: Chromosome>(chromosomeA: T, chromosomeB: T) -> (childA: T, childB: T) {
+    func performCrossover<T: Hashable>(chromosomeA: [Gene<T>], chromosomeB: [Gene<T>]) -> (childA: [Gene<T>], childB: [Gene<T>]) {
         
-        let point1 = Int(arc4random_uniform(UInt32(chromosomeA.genes.count)))
-        let point2 = Int(arc4random_uniform(UInt32(chromosomeB.genes.count)))
+        let point1 = Int(arc4random_uniform(UInt32(chromosomeA.count)))
+        let point2 = Int(arc4random_uniform(UInt32(chromosomeB.count)))
         
         let crossoverA = min(point1, point2)
         
-        var childGenesA: [T.GeneType] = []
-        var childGenesB: [T.GeneType] = []
+        var childGenesA: [Gene<T>] = []
+        var childGenesB: [Gene<T>] = []
         
-        for i in 0 ..< chromosomeA.genes.count {
+        for i in 0 ..< chromosomeA.count {
             if i < crossoverA {
-                childGenesA.append(chromosomeA.genes[i])
-                childGenesB.append(chromosomeB.genes[i])
+                childGenesA.append(chromosomeA[i])
+                childGenesB.append(chromosomeB[i])
             } else {
-                childGenesA.append(chromosomeB.genes[i])
-                childGenesB.append(chromosomeA.genes[i])
+                childGenesA.append(chromosomeB[i])
+                childGenesB.append(chromosomeA[i])
             }
         }
         
-        if !T.allowsDuplicates {
-            swapDuplicates(&childGenesA, &childGenesB)
-        }
-        
-        let childA = T(genes: childGenesA)
-        let childB = T(genes: childGenesB)
-        
-        return (childA: childA, childB: childB)
+        return (childA: childGenesA, childB: childGenesB)
     }
 }

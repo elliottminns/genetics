@@ -1,17 +1,8 @@
-public struct Population<T: Chromosome> {
-
-    var chromosomes: [T]
-
-    init(chromosomes: [T]) {
-        self.chromosomes = chromosomes       
-    }
+public struct Population<T: Hashable> {
     
-    func totalFitness() -> Int {
-        
-        let fitness = chromosomes.reduce(0) {
-            return $0 + $1.fitness()
-        }
-        
-        return fitness
+    var chromosomes: [Chromosome<T>]
+
+    init(chromosomes: [Chromosome<T>]) {
+        self.chromosomes = chromosomes       
     }
 }

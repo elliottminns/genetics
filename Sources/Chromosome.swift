@@ -1,16 +1,24 @@
-public protocol Chromosome {
+
+public final class Chromosome<T: Hashable> {
     
-    associatedtype GeneType: Gene
+    var genes: [Gene<T>]
     
-    var genes: [GeneType] { get set }
+    let allowsDuplicates: Bool
     
-    static var allowsDuplicates: Bool { get }
+    let fitnessFunction: ((chromosome: [T]) -> Int)
     
-    init(genes: [GeneType])
+    init(genes: [Gene<T>], allowsDuplicates: Bool, fitnessFunction: (chromosome: [T]) -> Int) {
+        self.genes = genes
+        self.allowsDuplicates = false
+        self.fitnessFunction = fitnessFunction
+    }
     
-    func fitness() -> Int
-    
-    func randomMutationOnGene(gene: GeneType) -> GeneType
+    public func fitness() -> Int {
+        let values = self.genes.map {
+            return $0.value
+        }
+        return self.fitnessFunction(chromosome: values)
+    }
 }
 
 

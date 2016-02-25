@@ -5,20 +5,15 @@ import Genetics
     import Darwin
 #endif
 
-extension String: Gene {
+/*
+final class StringChromosome: Chromosome<String> {
     
-}
-
-final class StringChromosome: Chromosome {
+    typealias GeneType = String
     
-    var genes: [String]
+    var genes: [Gene<String>]
     
-    static var allowsDuplicates: Bool {
-        return false
-    }
-    
-    required init(genes: [String]) {
-        self.genes = genes
+    init(genes: [Gene<T>], allowsDuplicates: Bool) {
+        
     }
     
     let possibleGenes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
@@ -76,4 +71,4 @@ final class StringChromosome: Chromosome {
         return possibleGenes[newValueIndex]
     }
     
-}
+}*/

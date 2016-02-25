@@ -1,62 +1,99 @@
 import Foundation
+
 import Genetics
 
-class Algorithm {
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
+
+final class Algorithm {
     
-    var algorithm: GeneticAlgorithm<StringChromosome>?
+    let possibleGenes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+                         "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+                         "w", "x", "y", "z"]
     
-    func createPopulation() -> Population<StringChromosome> {
+    let algorithm = GeneticAlgorithm<String>(populationSize: 50, allowsDuplicates: false)
+    
+    init() {
         
-        var chromosomes = [StringChromosome]()
-        
-        for _ in 0 ..< 100 {
-            chromosomes.append(createChromosome())
+        algorithm.fitnessFunction = { (chromosome: [String]) -> Int in
+            
+            let desired = "helloworld"
+            
+            let string = chromosome.joinWithSeparator("")
+            
+            let chars = string.characters
+            
+            var fitness = 0
+            
+            var characterSet = Set<Character>()
+            
+            for char in chars {
+                characterSet.insert(char)
+            }
+            
+            for char in desired.characters {
+                if characterSet.contains(char) {
+                    fitness += 1
+                }
+            }
+            
+            var desiredArray = desired.characters.map {
+                return String($0)
+            }
+            
+            for i in 0 ..< desiredArray.count {
+                
+                let desiredChar = desiredArray[i]
+                
+                let actualChar = chromosome[i]
+                
+                if desiredChar == actualChar {
+                    fitness += 100
+                }
+            }
+            
+            return fitness
         }
         
-        return Population<StringChromosome>(chromosomes: chromosomes)
-    }
-    
-    func createChromosome() -> StringChromosome {
-        
-        let desired = "helloworld"
-        
-        var genes = [String]()
-        
-        for _ in 0 ..< desired.characters.count {
-            genes.append("a")
+        algorithm.randomMutation = { (gene: String) -> String in
+            #if os(Linux)
+                let newValueIndex = Int(UInt32(rand()) % UInt32(possibleGenes.count))
+            #else
+                let newValueIndex = Int(arc4random_uniform(UInt32(self.possibleGenes.count)))
+            #endif
+            
+            return self.possibleGenes[newValueIndex]
         }
         
-        let chromosome = StringChromosome(genes: genes)
-        return chromosome
+        algorithm.randomChromosome = { () -> [String] in
+        
+            let length = "helloworld".characters.count
+            
+            var chromosome: [String] = []
+            
+            for _ in 0 ..< length {
+                chromosome.append("a")
+            }
+            
+            return chromosome
+        }
+        
+        algorithm.onGenerationCompleted = { generation in
+            let details = self.algorithm.currentTopChromosome.joinWithSeparator("")
+            print("\(generation): \(details)")
+            if details == "helloworld" {
+                self.algorithm.stop()
+            }
+        }
     }
     
-    func start() {
-        let initialPopulation = createPopulation()
-        let algorithm = GeneticAlgorithm(initialPopulation: initialPopulation,
-                                         delegate: self)
+    func run() {
         algorithm.runSync()
     }
 }
 
-extension Algorithm: GeneticAlgorithmDelegate {
-    func geneticAlgorithm<T: Chromosome>(algorithm: GeneticAlgorithm<T>,
-                          didCompleteGeneration generation: Int,
-                                                withPopulation population: Population<T>) {
-        
-        let top = algorithm.currentTopChromosome
-        let genes = top.genes.map {
-            return $0 as! String
-        }
-        
-        let world = genes.joinWithSeparator("")
-        print("\(generation): \(genes.joinWithSeparator(""))")
-        
-        if world == "helloworld" {
-            algorithm.stop()
-        }
-        
-    }
-}
-
 let algorithm = Algorithm()
-algorithm.start()
+algorithm.run()

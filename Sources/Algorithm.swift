@@ -1,14 +1,7 @@
 
 import Foundation
 
-public protocol GeneticAlgorithmDelegate {
-    func geneticAlgorithm<T: Chromosome>(algorithm: GeneticAlgorithm<T>,
-        didCompleteGeneration generationCount: Int,
-        withPopulation population: Population<T>)
-}
-
-
-public class GeneticAlgorithm<T: Chromosome> {
+public class GeneticAlgorithm<T: Hashable> {
     
     public var topPopulation: Population<T>? {
         return currentTopPopulation
@@ -16,27 +9,35 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     var currentTopPopulation: Population<T>?
 
-    public var currentTopChromosome: T {
-        return topChromosome
+    public var currentTopChromosome: [T] {
+        return topChromosome.genes.map {
+            return $0.value
+        }
     }
     
-    var topChromosome: T
+    var topChromosome: Chromosome<T>!
     
     var topFitness: Int {
         return currentTopFitness
     }
     
-    var delegate: GeneticAlgorithmDelegate
+    var fitnessFunction: ((chromosome: [T]) -> Int)?
+    
+    var randomMutation: ((gene: T) -> T)?
+    
+    var randomChromosome: (() -> [T])?
+    
+    var onGenerationCompleted: ((generation: Int) -> ())?
     
     var currentGeneration: Int = 0
     
     var currentTopFitness: Int = 0
     
-    var currentPopulation: Population<T>
+    var currentPopulation: Population<T>!
     
     var crossover: Crossover
     
-    var mutationRate: Double = 1.0
+    var mutationRate: Double = 0.02
     
     public var selection: Selection
     
@@ -46,19 +47,48 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     var isRunning = false
     
-    public init(initialPopulation: Population<T>, delegate: GeneticAlgorithmDelegate) {
-        selection = TournamentSelection()
-        crossover = PartiallyMatchedCrossover<T>(crossoverRate: 80)
-        currentPopulation = initialPopulation
-        self.delegate = delegate
+    let allowsDuplicates: Bool
     
-        var topChromo = initialPopulation.chromosomes.first!
-        for chromo in initialPopulation.chromosomes {
-            if chromo.fitness() > topChromo.fitness() {
-                topChromo = chromo
-            }   
+    let populationSize: Int
+    
+    public init(populationSize: Int, allowsDuplicates: Bool) {
+        
+        selection = TournamentSelection()
+        
+        crossover = PartiallyMatchedCrossover(crossoverRate: 80)
+        
+        self.allowsDuplicates = allowsDuplicates
+        
+        self.populationSize = populationSize
+    }
+    
+    public func fitnessForChromosome(chromosome: Chromosome<T>) -> Int {
+        let genes = chromosome.genes.map {
+            return $0.value
         }
-        topChromosome = topChromo
+        return self.fitnessFunction!(chromosome: genes)
+    }
+    
+    public func setupInitial() {
+        var initialPopulation = [Chromosome<T>]()
+        
+        for _ in 0 ..< populationSize {
+            
+            let genes = randomChromosome!().map {
+                return Gene<T>(value: $0)
+            }
+            
+            let chromosome = Chromosome<T>(genes: genes,
+                                           allowsDuplicates: allowsDuplicates,
+                                           fitnessFunction: fitnessFunction!)
+            
+            initialPopulation.append(chromosome)
+        }
+        
+        let population = Population<T>(chromosomes: initialPopulation)
+        currentPopulation = population
+        
+        topChromosome = findTopChromosomeInPopulation(population)
     }
     
     public func stop() {
@@ -66,6 +96,7 @@ public class GeneticAlgorithm<T: Chromosome> {
     }
     
     public func runSync(desiredFitness: Int? = nil) {
+        self.setupInitial()
         isRunning = true
 
         if let desiredFitness = desiredFitness {
@@ -87,44 +118,74 @@ public class GeneticAlgorithm<T: Chromosome> {
     
     public func runNextGeneration() {
         let matingPool = selection.selectFromPopulation(currentPopulation)
-        var children = crossover.crossoverPopulation(matingPool)
+        
+        let mating = matingPool.map {
+            return $0.genes
+        }
+        
+        var children = crossover.crossoverPopulation(mating)
         
         for childIndex in 0 ..< children.count {
             
-            for i in 0 ..< children[childIndex].genes.count {
+            for i in 0 ..< children[childIndex].count {
                 
-                let chance = Double(arc4random_uniform(UInt32(10e5))) / 1e4
+                let chance = Double(arc4random_uniform(UInt32(10e5))) / 10e5
                 
                 if chance <= mutationRate {
+                    
                     let child = children[childIndex]
-                    let gene = child.genes[i]
                     
-                    children[childIndex].genes[i] = child.randomMutationOnGene(gene)
-                    
+                    let gene = child[i]
+                    let value = randomMutation!(gene: gene.value)
+                    children[childIndex][i] = Gene<T>(value: value)
                 }
             }
-
         }
         
-        let population = Population<T>(chromosomes: children)
+        let newPopulation = children.map {
+            return Chromosome<T>(genes: $0, allowsDuplicates: self.allowsDuplicates, fitnessFunction: self.fitnessFunction!)
+        }
+        
+        let population = Population<T>(chromosomes: newPopulation)
 
         currentPopulation = population
 
-        let fitness = currentPopulation.totalFitness()
-
-        if fitness > currentTopFitness {
-            currentTopPopulation = currentPopulation
-            currentTopFitness = fitness
-        }
-
-        for chromo in currentPopulation.chromosomes {
-            if chromo.fitness() > currentTopChromosome.fitness() {
-                self.topChromosome = chromo
+        currentGeneration += 1
+        
+        topChromosome = findTopChromosomeInPopulation(population)
+        
+        onGenerationCompleted!(generation: currentGeneration)
+        
+    }
+    
+    func findTopChromosomeInPopulation(population: Population<T>) -> Chromosome<T> {
+        
+        var topFitness: Int? = nil
+        
+        var topChromosome = population.chromosomes.first!
+        
+        for chromo in population.chromosomes {
+            
+            let genes = chromo.genes.map {
+                return $0.value
+            }
+            
+            let fitness = fitnessFunction!(chromosome: genes)
+            
+            if let best = topFitness {
+                
+                if fitness > best {
+                    topFitness = fitness
+                    topChromosome = chromo
+                }
+                
+            } else {
+                
+                topFitness = fitness
+                topChromosome = chromo
             }
         }
-        
-        delegate.geneticAlgorithm(self, didCompleteGeneration: currentGeneration, withPopulation: population)
-        currentGeneration += 1
+        return topChromosome
     }
     
     

@@ -6,14 +6,14 @@ struct TournamentSelection {
 
 extension TournamentSelection: Selection {
     
-    func selectFromPopulation<T: Chromosome>(population: Population<T>) -> [T] {
+    func selectFromPopulation<T: Hashable>(population: Population<T>) -> [Chromosome<T>] {
         
         var pool = population;
         
-        var matingPool = [T]()
+        var matingPool = [Chromosome<T>]()
         
         repeat {
-            var fighters = [Int: T]()
+            var fighters = [Int: Chromosome<T>]()
             
             var highestFighterIndex: Int = 0
             

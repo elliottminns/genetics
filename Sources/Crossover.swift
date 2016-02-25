@@ -6,21 +6,24 @@ public protocol Crossover {
     
     init(crossoverRate: Double)
     
-    func performCrossover<T: Chromosome>(chromosomeA: T, chromosomeB: T) -> (childA: T, childB: T)
+    func performCrossover<T: Hashable>(chromosomeA: [Gene<T>],
+                          chromosomeB: [Gene<T>]) -> (childA: [Gene<T>], childB: [Gene<T>])
 }
 
 extension Crossover {
     
-    func crossoverPopulation<T: Chromosome>(parents: [T]) -> [T] {
+    func crossoverPopulation<T: Hashable>(parents: [[Gene<T>]]) -> [[Gene<T>]] {
         
         var firstParents = parents
-        var children = [T]()
+        
+        var children = [[Gene<T>]]()
         
         let total = parents.count * 2
         
         while children.count < total {
             let indexA = Int(arc4random_uniform(UInt32(firstParents.count)))
             let parentA = firstParents.removeAtIndex(indexA)
+            
             let indexB = Int(arc4random_uniform(UInt32(firstParents.count)))
             let parentB = firstParents.removeAtIndex(indexB)
             
@@ -29,6 +32,7 @@ extension Crossover {
             }
             
             let childs = performCrossover(parentA, chromosomeB: parentB)
+            
             children.append(childs.childA)
             children.append(childs.childB)
         }
@@ -36,10 +40,10 @@ extension Crossover {
         return children
     }
     
-    func swapDuplicates<U: Gene>(inout genesA: [U], inout _ genesB: [U]) {
+    func swapDuplicates<T: Hashable>(inout genesA: [Gene<T>], inout _ genesB: [Gene<T>]) {
         
-        var duplicatesA: [U: Int] = duplicatesForGenes(genesA)
-        var duplicatesB: [U: Int] = duplicatesForGenes(genesB)
+        var duplicatesA: [Gene<T>: Int] = duplicatesForGenes(genesA)
+        var duplicatesB: [Gene<T>: Int] = duplicatesForGenes(genesB)
         
         while duplicatesA.count > 0 {
             
@@ -52,11 +56,11 @@ extension Crossover {
         }
     }
     
-    func duplicatesForGenes<U: Gene>(genes: [U]) -> [U: Int] {
+    func duplicatesForGenes<T: Hashable>(genes: [Gene<T>]) -> [Gene<T>: Int] {
         
-        var set = Set<U>()
+        var set = Set<Gene<T>>()
         
-        var duplicates: [U: Int] = [:]
+        var duplicates: [Gene<T>: Int] = [:]
 
         var index = 0
         
