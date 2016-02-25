@@ -1,6 +1,12 @@
 
 import Foundation
 
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
+
 public class GeneticAlgorithm<T: Hashable> {
     
     public var topPopulation: Population<T>? {
@@ -136,8 +142,27 @@ public class GeneticAlgorithm<T: Hashable> {
                     let child = children[childIndex]
                     
                     let gene = child[i]
-                    let value = randomMutation!(gene: gene.value)
-                    children[childIndex][i] = Gene<T>(value: value)
+                    if let randomMutation = randomMutation {
+                        let value = randomMutation(gene: gene.value)
+                        children[childIndex][i] = Gene<T>(value: value)
+                    } else {
+                        
+                        // Perform swap mutation
+                        var newValue: Int
+                        repeat {
+                        #if os(Linux)
+                            newValue = Int(UInt32(rand()) % UInt32(child.count))
+                        #else
+                            newValue = Int(arc4random_uniform(UInt32(child.count)))
+                        #endif
+                        } while newValue != i
+                        
+                        let a = child[i]
+                        let b = child[newValue]
+                        
+                        children[childIndex][i] = b
+                        children[childIndex][newValue] = a
+                    }
                 }
             }
         }
