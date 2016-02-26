@@ -71,7 +71,7 @@ final class Algorithm {
                          "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
                          "w", "x", "y", "z"]
     
-    let algorithm = GeneticAlgorithm<String>(populationSize: 50, allowsDuplicates: false)
+    let algorithm = GeneticAlgorithm<String>(populationSize: 50, allowsDuplicates: true)
     
     init() {
         
