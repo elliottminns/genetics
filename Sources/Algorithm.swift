@@ -27,13 +27,13 @@ public class GeneticAlgorithm<T: Hashable> {
         return currentTopFitness
     }
     
-    public var fitnessFunction: ((chromosome: [T]) -> Int)?
+    public var fitnessFunction: ((_ chromosome: [T]) -> Int)?
     
-    public var randomMutation: ((gene: T) -> T)?
+    public var randomMutation: ((_ gene: T) -> T)?
     
     public var randomChromosome: (() -> [T])?
     
-    public var onGenerationCompleted: ((generation: Int) -> ())?
+    public var onGenerationCompleted: ((_ generation: Int) -> ())?
     
     var currentGeneration: Int = 0
     
@@ -72,7 +72,7 @@ public class GeneticAlgorithm<T: Hashable> {
         let genes = chromosome.genes.map {
             return $0.value
         }
-        return self.fitnessFunction!(chromosome: genes)
+        return self.fitnessFunction!(genes)
     }
     
     public func setupInitial() {
@@ -93,7 +93,7 @@ public class GeneticAlgorithm<T: Hashable> {
         
         let population = Population<T>(chromosomes: initialPopulation)
         currentPopulation = population
-        let result = findTopChromosomeInPopulation(population)
+        let result = findTopChromosomeInPopulation(population: population)
         topChromosome = result.chromosome
         currentTopFitness = result.fitness
     }
@@ -118,19 +118,19 @@ public class GeneticAlgorithm<T: Hashable> {
     }
     
     public func runAsync() {
-        dispatch_async(dispatch_get_global_queue(0, 0)) {
+        DispatchQueue.global().async {
             self.runSync()
         }
     }
     
     public func runNextGeneration() {
-        let matingPool = selection.selectFromPopulation(currentPopulation)
+        let matingPool = selection.select(fromPopulation: currentPopulation)
         
         let mating = matingPool.map {
             return $0.genes
         }
         
-        var children = crossover.crossoverPopulation(mating, allowDuplicates: self.allowsDuplicates)
+        var children = crossover.crossoverPopulation(parents: mating, allowDuplicates: self.allowsDuplicates)
         
         for childIndex in 0 ..< children.count {
             
@@ -144,7 +144,7 @@ public class GeneticAlgorithm<T: Hashable> {
                     
                     let gene = child[i]
                     if let randomMutation = randomMutation {
-                        let value = randomMutation(gene: gene.value)
+                        let value = randomMutation(gene.value)
                         children[childIndex][i] = Gene<T>(value: value)
                     } else {
                         
@@ -179,14 +179,14 @@ public class GeneticAlgorithm<T: Hashable> {
 
         currentGeneration += 1
         
-        let result = findTopChromosomeInPopulation(population)
+        let result = findTopChromosomeInPopulation(population: population)
         
         if result.fitness > currentTopFitness {
             topChromosome = result.chromosome
             currentTopFitness = result.fitness
         }
         
-        onGenerationCompleted!(generation: currentGeneration)
+        onGenerationCompleted!(currentGeneration)
         
     }
     
@@ -202,7 +202,7 @@ public class GeneticAlgorithm<T: Hashable> {
                 return $0.value
             }
             
-            let fitness = fitnessFunction!(chromosome: genes)
+            let fitness = fitnessFunction!(genes)
             
             if let best = topFitness {
                 

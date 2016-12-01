@@ -22,21 +22,21 @@ extension Crossover {
         
         while children.count < total {
             let indexA = Int(arc4random_uniform(UInt32(firstParents.count)))
-            let parentA = firstParents.removeAtIndex(indexA)
+            let parentA = firstParents.remove(at: indexA)
             
             let indexB = Int(arc4random_uniform(UInt32(firstParents.count)))
-            let parentB = firstParents.removeAtIndex(indexB)
+            let parentB = firstParents.remove(at: indexB)
             
             if firstParents.count <= 1 {
                 firstParents = parents
             }
             
-            let childs = performCrossover(parentA, chromosomeB: parentB)
+            let childs = performCrossover(chromosomeA: parentA, chromosomeB: parentB)
             var childA = childs.childA
             var childB = childs.childB
             
             if (!allowDuplicates) {
-                swapDuplicates(&childA, &childB)
+                swapDuplicates(genesA: &childA, &childB)
             }
             
             children.append(childA)
@@ -46,10 +46,10 @@ extension Crossover {
         return children
     }
     
-    func swapDuplicates<T: Hashable>(inout genesA: [Gene<T>], inout _ genesB: [Gene<T>]) {
+    func swapDuplicates<T: Hashable>( genesA: inout [Gene<T>], _ genesB: inout [Gene<T>]) {
         
-        var duplicatesA: [Gene<T>: Int] = duplicatesForGenes(genesA)
-        var duplicatesB: [Gene<T>: Int] = duplicatesForGenes(genesB)
+        var duplicatesA: [Gene<T>: Int] = duplicatesForGenes(genes: genesA)
+        var duplicatesB: [Gene<T>: Int] = duplicatesForGenes(genes: genesB)
         
         while duplicatesA.count > 0 {
             

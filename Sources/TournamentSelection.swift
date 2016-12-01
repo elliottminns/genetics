@@ -6,7 +6,7 @@ struct TournamentSelection {
 
 extension TournamentSelection: Selection {
     
-    func selectFromPopulation<T: Hashable>(population: Population<T>) -> [Chromosome<T>] {
+    func select<T: Hashable>(fromPopulation population: Population<T>) -> [Chromosome<T>] {
         
         var pool = population;
         
@@ -35,7 +35,7 @@ extension TournamentSelection: Selection {
             
             if let highestFighter = fighters[highestFighterIndex] {
                 matingPool.append(highestFighter)
-                pool.chromosomes.removeAtIndex(highestFighterIndex)
+                pool.chromosomes.remove(at: highestFighterIndex)
             }
             
         } while matingPool.count < population.chromosomes.count / 2
