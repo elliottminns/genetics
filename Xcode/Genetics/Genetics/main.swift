@@ -81,7 +81,7 @@ class Algorithm {
             var previousCity: City?
             for city in chromosome {
                 if let previousCity = previousCity {
-                    distance -= previousCity.distanceFromOtherCity(city)
+                    distance -= previousCity.distanceFromOtherCity(city: city)
                 }
                 
                 previousCity = city
@@ -89,7 +89,7 @@ class Algorithm {
             
             let first = chromosome[0]
             
-            distance -= previousCity!.distanceFromOtherCity(first)
+            distance -= previousCity!.distanceFromOtherCity(city: first)
             
             return distance
         }
@@ -97,7 +97,7 @@ class Algorithm {
         algorithm.randomChromosome = { () -> [City] in
             
             
-            let chromosome: [City] = self.cities.sort { _, _ -> Bool in
+            let chromosome: [City] = self.cities.sorted { _, _ -> Bool in
                 #if os(Linux)
                     let index = Int(UInt32(rand()) % UInt32(2))
                 #else
@@ -118,7 +118,7 @@ class Algorithm {
             
             let fitness = self.algorithm.currentTopFitness
             
-            let details = identifiers.joinWithSeparator("")
+            let details = identifiers.joined(separator: "")
             print("\(generation): \(details) - \(fitness)")
         }
     }
